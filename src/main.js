@@ -10,6 +10,15 @@ const cvc = document.querySelector("#security-code")
 const expirationDate = document.querySelector("#expiration-date")
 const cardHolder = document.querySelector("#card-holder")
 const cardNumber = document.querySelector("#card-number")
+const addButton = document.querySelector("#add-card")
+const ccHolder = document.querySelector(".cc-holder .value")
+const ccSecurity = document.querySelector(".cc-security .value")
+const ccExpiration = document.querySelector(".cc-expiration .value")
+const ccNumber = document.querySelector(".cc-info .cc-number")
+
+document.querySelector("form").addEventListener("submit", (event) => {
+  event.preventDefault()
+})
 
 // Function to change color cc by type
 function setCardType(type) {
@@ -82,6 +91,46 @@ const cardNumberPattern = {
 }
 
 const cardNumberMasked = IMask(cardNumber, cardNumberPattern)
-console.log(cardNumberMasked)
+
+addButton.addEventListener("click", () => {
+  alert("cartão adicionado!")
+})
+
+const cardHolderPattern = {
+  mask: /^[a-z\s]+$/,
+}
+
+const cardHolderMasked = IMask(cardHolder, cardHolderPattern)
+
+cardHolder.addEventListener("input", () => {
+  ccHolder.textContent = cardHolderMasked.value
+  if (
+    ccHolder.textContent === "" ||
+    ccHolder.textContent.match(/^\s+$/) ||
+    ccHolder.textContent.length === 0
+  ) {
+    ccHolder.textContent = "FULANO DA SILVA"
+  }
+})
+
+cvcMasked.on("accept", () => {
+  ccSecurity.textContent = cvcMasked.value.length === 0 ? 123 : cvcMasked.value
+})
+
+expirationDateMasked.on("accept", () => {
+  ccExpiration.textContent =
+    expirationDateMasked.value.length === 0
+      ? "02/32"
+      : expirationDateMasked.value
+})
+
+cardNumberMasked.on("accept", async () => {
+  ccNumber.textContent =
+    cardNumberMasked.value.length === 0
+      ? "1234 5678 9012 3456"
+      : cardNumberMasked.value
+
+  setCardType(cardNumberMasked.masked.currentMask.cardType)
+})
 
 globalThis.setCardType = setCardType
